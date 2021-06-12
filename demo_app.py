@@ -267,25 +267,10 @@ with st.echo(code_location='below'):
     # Notebook у меня всё построилось. Прилагаю граф, построенный Jupyter.
 
     st.image("graph.png")
-    # if uploadFile is not None:
-    #     # Perform your Manupilations (In my Case applying Filters)
-    #     img = load_image(uploadFile)
-    #     st.image(img)
-
-    # st.pyplot(fign)
-
     # BLOCK10
-    # from sqlalchemy import select
-    # from sqlalchemy import create_engine, Table, select, MetaData
-    # import pymysql
-    # engine = create_engine('sqlite://', echo=False)
-    # summ_all.to_sql('crime', con=engine)
-    # engine.execute("SELECT * FROM crime").fetchall()
-
-
-
     # BLOCK11
     st.header("The analysis of offenses in Kansas in 2020")
     HtmlFile = open("r_code.html", 'r', encoding='utf-8')
     source_code = HtmlFile.read()
     st.markdown(source_code, unsafe_allow_html=True)
+
