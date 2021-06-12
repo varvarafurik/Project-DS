@@ -1,0 +1,113 @@
+---
+title: "Offenses in Kansas, 2020"
+output: html_document
+---
+
+```{r include=FALSE}
+library("tidyverse")
+library("nortest")
+library('lubridate')
+library("date")
+```
+
+
+
+```{r}
+dat <- read.csv("KCPD_Crime_Data_2020.csv")
+```
+
+```{r}
+date<-as.Date(dat$From_Date,format="%m/%d/%y")
+dat<-cbind(date, dat)
+
+```
+
+
+"Вычислим, в какое время регистрируется больше всего правонарушений.
+С помощью возможностей R проверим, соотвествует ли распределение времени
+регистрации правонарушений нормальному."
+```{r}
+
+
+dat  %>% filter(Sex != "U", Sex != "",  date>="01/01/2020") %>%
+mutate(month = month(date)) %>% group_by(month)  -> by_sex
+
+dat  %>% filter(Race != "U", Race != "", date>="01/01/2020") %>%
+mutate(month = month(date)) %>% group_by(month)  -> by_race
+
+dat %>% group_by(Description) %>% mutate(number=n()) %>% select(Description, number) %>% filter(number>=4000, Description!="") %>% distinct(Description, number)->pop_desc
+
+dat  %>% filter(date>="01/01/2020", Reported_Time!="")  %>% group_by(Reported_Time)  %>% mutate(number=n()) %>% filter(Description %in% pop_desc$Description) %>% drop_na(Age) -> pop_time
+
+pop_time  %>% filter(Age != "", date>="01/01/2020") %>%
+group_by(Description) %>% drop_na(Age, Description) -> by_age
+
+dat  %>% filter(date>="01/01/2020", Reported_Time!="")  %>% group_by(Reported_Time)  %>% mutate(number=n())%>% mutate(norm_num=number)-> by_time
+
+
+a<-by_time[by_time$number==min(by_time$number),]
+a<-a$Reported_Time[1]
+b<-by_time[by_time$number==max(by_time$number),]
+b<-b$Reported_Time[1]
+```
+
+"Меньше всего правонарушений:"
+```{r}
+
+a
+```
+"Больше всего правонарушений:"
+```{r}
+
+b
+```
+"Тест Пирсона:"
+```{r}
+
+pearson.test(by_time$number)
+```
+
+Посмотрим, какую долю всех правонарушений в месяце совершают люди различного пола.
+
+```{r}
+
+g1 <- ggplot(by_sex, aes(month))
+g1 + geom_bar(aes(fill=Sex))
+
+```
+
+
+"Посмотрим, какую долю всех правонарушений в месяце совершают люди различной расы."
+```{r}
+
+g2 <- ggplot(by_race, aes(month))
+g2 + geom_bar(aes(fill=Race))
+```
+
+"Более подробно посмотрим на распределение времени, когда совершаются правонарушения. Различный цвет соответствует факту использования или неиспользования оружия."
+```{r}
+
+g4<-ggplot(by_time, aes(Reported_Time, number)) 
+g4+ geom_point(aes(size=number,color=Firearm.Used.Flag)) +geom_text(x='05:10', y=1, label="Minimum, n=5, time=05:10", color="blue", size=3) + scale_size(range = c(0, 3))+ geom_text(x='13:11', y=179, label="Maximum, n=173,time=13:11", color="blue",size=3)+
+scale_x_discrete(breaks=c("02:00","04:00","06:00","08:00","10:00","12:00","14:00","16:00","18:00","20:00","22:00","00:00"))
+
+```
+
+
+"Рассмотрим 7 наиболее часто совершаемых правонарушений, посчитаем средний возраст. Большинство правонарушений совершается возрастной группой от 36 до 41 года."
+```{r fig.width=12}
+library(ggstatsplot)
+
+
+# plot
+ggbetweenstats(by_age,
+  x = Description,
+  y = Age,
+  violin.args = list(width = 0.5, alpha = 0.2),
+  pairwise.comparisons = FALSE,
+  title = "Distribution of ages depending on the type of offense"
+  
+)
+```
+
+
