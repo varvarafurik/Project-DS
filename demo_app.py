@@ -9,11 +9,10 @@ from sklearn.linear_model import LinearRegression
 import streamlit as st
 from streamlit_folium import folium_static
 import streamlit.components.v1 as components
-import mysql.connector
-from sqlalchemy import create_engine
+
 
 from bs4 import BeautifulSoup
-import sql
+
 import regex
 
 with st.echo(code_location='below'):
