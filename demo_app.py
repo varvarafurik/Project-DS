@@ -48,7 +48,7 @@ with st.echo(code_location='below'):
     m = folium.Map([41.75215, -97.61819], zoom_start=4)
     for ind, row in summ_all.iterrows():
         folium.Circle([row.latitude, row.longitude],
-                      radius=10).add_to(m)
+                      radius=10, control_scale=True).add_to(m)
     folium_static(m)
     # ct = summ_all[(summ_all['state_abbr'] == "KS")].reset_index().dropna()
     # ct["Cases"] = np.nan
@@ -67,7 +67,7 @@ with st.echo(code_location='below'):
 
     # BLOCK3
     st.write(
-        'Давайте более подробно изучим статистики в одном из штатов. На карте расположены все агнетства штата Канзас. '
+        'Давайте более подробно изучим статистики в одном из штатов. На карте расположены все агенства штата Канзас. '
         'Размер точек зависит от количества зарегистрированных правонарушений или преступлений в 2019 году. ')
     st.write("Число агентств в Казасе:")
     st.write(pd.value_counts(summ_all['state_abbr'])["KS"])
@@ -204,16 +204,8 @@ with st.echo(code_location='below'):
     plt.title("Offenses in Kansas, 2010-2019")
     plt.plot(X, regr.predict(X), color='C1')
     st.pyplot(figpr)
-    #
-    # z=[0]
-    # A=X
-    #
-    # z[0]=usa_total
-    # figall = plt.figure()
-    # plt.plot(A, z[0])
-    # plt.plot(A, regr.predict(A), color='C1')
-    # st.pyplot(figall)
-    st.write('Predicition for 2020')
+
+    st.write('Предсказание для 2020')
     st.write(regr.predict(np.array([[2020]])))
 
     # BLOCK8
@@ -223,7 +215,7 @@ with st.echo(code_location='below'):
     gdp_h = np.array((pd.read_csv("MEHOINUSKSA672N.csv"))["MEHOINUSKSA672N"])
     u, u_sd = (np.around(np.mean(unemp), decimals=3), np.around(np.std(unemp), decimals=3))
     g, g_sd = (np.around(np.mean(gdp_h / 1000), decimals=3), np.around(np.std(gdp_h / 1000), decimals=3))
-    st.write('Безработица и ВВП на душу населния в Канзасе, 2009-2019:')
+    st.write('Безработица и ВВП на душу населения в Канзасе, 2009-2019:')
     st.write(pd.read_csv("KSURN.csv"))
     st.write('ВВП на душу населения в Канзасе, 2009-2019:')
     st.write(pd.read_csv("MEHOINUSKSA672N.csv"))
@@ -263,11 +255,9 @@ with st.echo(code_location='below'):
      ('List of law enforcement agencies in Kansas', 'Wichita\nPolice\nDepartment'): str(a[4])}, font_color='red')
     # Проблемы с выводом nx решаются (согласно советам из интернета) с помощью установки более ранней версии
     # matplotlib, однако для моец версии python установка matplotlib 2.2.3 уже невозможна. К счастью, в Jupyter
-    # Notebook у меня всё построилось. Прилагаю граф, построенный Jupyter.
-
+    # Notebook у меня всё построилось. Прилагаю граф, построенный в Jupyter.
     st.image("graph.png")
     # BLOCK10
-    # BLOCK11
     st.header("The analysis of offenses in Kansas in 2020")
     HtmlFile = open("r_code.html", 'r', encoding='utf-8')
     source_code = HtmlFile.read()
