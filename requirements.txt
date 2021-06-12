@@ -10,7 +10,7 @@ streamlit_folium==0.4.0
 Scikit-learn==0.24.2
 bs4==0.0.1
 regex==2021.4.4
-networkx=2.5.1
-branca=0.4.2
+networkx==2.5.1
+branca==0.4.2
 sql==0.4.0
 sqlalchemy=1.4.18
